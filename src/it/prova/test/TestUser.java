@@ -38,8 +38,12 @@ public class TestUser {
 //			testFindAllWhereDateCreatedGreaterThan(userDAOInstance);
 //			System.out.println("In tabella user ci sono " + userDAOInstance.list().size() + " elementi.");
 			
-			testFindAllByCognome(userDAOInstance);
+//			testFindAllByCognome(userDAOInstance);
+//			System.out.println("In tabella user ci sono " + userDAOInstance.list().size() + " elementi.");
+			
+			testFindAllByLoginIniziaCon(userDAOInstance);
 			System.out.println("In tabella user ci sono " + userDAOInstance.list().size() + " elementi.");
+			
 			
 			// ESERCIZIO SUCCESSIVO: implementare metodi mancanti nel DAO
 
@@ -149,6 +153,29 @@ public class TestUser {
 		
 		System.out.println(".......................TEST PASSED...............");
 
+	}
+	
+	//------------------------------------- TEST FIND ALL INIZIALE LOGIN ---------------------------------------
+	private static void testFindAllByLoginIniziaCon(UserDAO userDaoInstance) throws Exception {
+		
+		System.out.println("............ test find all by login iniziale inizio ...............");
+
+		// riempiamo lista presa dal database
+		List<User> elencoPresenti = userDaoInstance.list();
+		
+		if (elencoPresenti.isEmpty())
+			throw new RuntimeException("erroe, e' vuota");
+		
+		// login che cercheremo
+		String inizialeDaCercare = elencoPresenti.get(0).getLogin();
+		// carichiamo la lista con elementi che ci interesano
+		List<User> userPresentiByIndirizzo = userDaoInstance.findAllByLoginIniziaCon(inizialeDaCercare);
+		
+		if (userPresentiByIndirizzo.isEmpty())
+			throw new RuntimeException("TEST FAILED");
+		
+		System.out.println(".......................TEST PASSED...............");
+		
 	}
 
 }
