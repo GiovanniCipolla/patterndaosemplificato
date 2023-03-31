@@ -2,6 +2,7 @@ package it.prova.test;
 
 import java.sql.Connection;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import it.prova.connection.MyConnection;
@@ -24,19 +25,22 @@ public class TestUser {
 			// ecco chi 'inietta' la connection: il chiamante
 			userDAOInstance = new UserDAOImpl(connection);
 
+//			System.out.println("In tabella user ci sono " + userDAOInstance.list().size() + " elementi.");
+//
+//			testInsertUser(userDAOInstance);
+//			System.out.println("In tabella user ci sono " + userDAOInstance.list().size() + " elementi.");
+//
+//			testFindById(userDAOInstance);
+//
+//			testDeleteUser(userDAOInstance);
+//			System.out.println("In tabella user ci sono " + userDAOInstance.list().size() + " elementi.");
+//
+//			testFindAllWhereDateCreatedGreaterThan(userDAOInstance);
+//			System.out.println("In tabella user ci sono " + userDAOInstance.list().size() + " elementi.");
+			
+			testFindAllByCognome(userDAOInstance);
 			System.out.println("In tabella user ci sono " + userDAOInstance.list().size() + " elementi.");
-
-			testInsertUser(userDAOInstance);
-			System.out.println("In tabella user ci sono " + userDAOInstance.list().size() + " elementi.");
-
-			testFindById(userDAOInstance);
-
-			testDeleteUser(userDAOInstance);
-			System.out.println("In tabella user ci sono " + userDAOInstance.list().size() + " elementi.");
-
-			testFindAllWhereDateCreatedGreaterThan(userDAOInstance);
-			System.out.println("In tabella user ci sono " + userDAOInstance.list().size() + " elementi.");
-
+			
 			// ESERCIZIO SUCCESSIVO: implementare metodi mancanti nel DAO
 
 		} catch (Exception e) {
@@ -123,6 +127,28 @@ public class TestUser {
 		}
 
 		System.out.println(".......testFindAllWhereDateCreatedGreaterThan fine: PASSED.............");
+	}
+
+	// ------------------------------------- TEST FIND ALL BY COGNOME
+	// --------------------------
+	private static void testFindAllByCognome(UserDAO userDaoInstance) throws Exception {
+		
+		System.out.println("............ test find all by cognome inizio ...............");
+
+		// riempiamo lista presa dal database
+		List<User> elencoPresenti = userDaoInstance.list();
+		if (elencoPresenti.isEmpty())
+			throw new RuntimeException("erroe, e' vuota");
+		// cognome che cercheremo
+		String cognomeDaCercare = elencoPresenti.get(0).getCognome();
+		// carichiamo la lista con elementi che ci interesano
+		List<User> userPresentiByCognome = userDaoInstance.findAllByCognome(cognomeDaCercare);
+		
+		if (userPresentiByCognome.isEmpty())
+			throw new RuntimeException("TEST FAILED");
+		
+		System.out.println(".......................TEST PASSED...............");
+
 	}
 
 }
