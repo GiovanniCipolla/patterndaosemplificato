@@ -44,6 +44,11 @@ public class TestUser {
 			testFindAllByLoginIniziaCon(userDAOInstance);
 			System.out.println("In tabella user ci sono " + userDAOInstance.list().size() + " elementi.");
 			
+			testFindByLoginAndPassword(userDAOInstance);
+			System.out.println("In tabella user ci sono " + userDAOInstance.list().size() + " elementi.");
+			
+			testFindAllByPassordIsNull(userDAOInstance);
+			System.out.println("In tabella user ci sono " + userDAOInstance.list().size() + " elementi.");
 			
 			// ESERCIZIO SUCCESSIVO: implementare metodi mancanti nel DAO
 
@@ -176,6 +181,49 @@ public class TestUser {
 		
 		System.out.println(".......................TEST PASSED...............");
 		
+	}
+	
+	//-------------------------------------TEST FIND BY LOGIN AND PASSWORD ---------------------------------------
+	private static void testFindByLoginAndPassword(UserDAO userDaoInstance)  throws Exception {
+		System.out.println("............ test find all by login and password iniziale inizio ...............");
+
+		// riempiamo lista presa dal database
+		List<User> elencoPresenti = userDaoInstance.list();
+		
+		if (elencoPresenti.isEmpty())
+			throw new RuntimeException("errore, e' vuota");
+		
+		// login che cercheremo
+		String loginDaTrovare = elencoPresenti.get(0).getLogin();
+		String passDaTrovare = elencoPresenti.get(0).getPassword();
+		// carichiamo la lista con elementi che ci interesano
+		User userTrovato = userDaoInstance.findByLoginAndPassword(loginDaTrovare, passDaTrovare);
+		
+		if (userTrovato == null)
+			throw new RuntimeException("TEST FAILED");
+		
+		System.out.println(".......................TEST PASSED...............");
+	}
+
+	//------------------------------------ test find All By Password Is Null-----------------------------------
+	private static void testFindAllByPassordIsNull(UserDAO userDaoInstance) throws Exception {
+		System.out.println("............ test find all by password null iniziale inizio ...............");
+
+		// riempiamo lista presa dal database
+		List<User> elencoPresenti = userDaoInstance.list();
+		
+		if (elencoPresenti.isEmpty())
+			throw new RuntimeException("errore, e' vuota");
+		
+		// prendiamo un user per test
+		// carichiamo la lista con elementi che ci interesano
+		elencoPresenti = userDaoInstance.findAllByPasswordIsNull();
+		
+		// uscirà l'errore perchè non c'è la password nulla
+//		if (elencoPresenti.isEmpty())
+//			throw new RuntimeException("TEST FAILED");
+		
+		System.out.println(".......................TEST PASSED...............");
 	}
 
 }

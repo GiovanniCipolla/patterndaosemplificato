@@ -275,14 +275,79 @@ public class UserDAOImpl extends AbstractMySQLDAO implements UserDAO {
 
 	@Override
 	public User findByLoginAndPassword(String loginInput, String passwordInput) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		
+		// verifica connessione
+		if (isNotActive())
+			throw new Exception("Connessione non attiva. Impossibile effettuare operazioni DAO.");
+
+		// verifica cognome valido
+		if (loginInput == null || passwordInput == null)
+			throw new RuntimeException("errore");
+		
+		User result = new User();
+		
+		// leggiamo la qwery e eseguiamo
+		try (PreparedStatement ps = connection.prepareStatement("select * from user where login=? and password=? ;")) {
+			ps.setString(1, loginInput+"%");
+			ps.setString(2, passwordInput+"%");
+
+			try (ResultSet rs = ps.executeQuery();) {
+				if (rs.next()) {
+					User userTemp = new User();
+					userTemp.setNome(rs.getString("NOME"));
+					userTemp.setCognome(rs.getString("COGNOME"));
+					userTemp.setLogin(rs.getString("LOGIN"));
+					userTemp.setPassword(rs.getString("PASSWORD"));
+					userTemp.setDateCreated(
+							rs.getDate("DATECREATED") != null ? rs.getDate("DATECREATED").toLocalDate() : null);
+					userTemp.setId(rs.getLong("ID"));
+					result=userTemp;
+
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+		
 	}
 
+	//------------------------------------- test find by password is null --------------------------------
 	@Override
 	public List<User> findAllByPasswordIsNull() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		// verifica connessione
+				if (isNotActive())
+					throw new Exception("Connessione non attiva. Impossibile effettuare operazioni DAO.");
+
+				List<User> result = new ArrayList<>();
+				
+				// leggiamo la qwery e eseguiamo
+				try (PreparedStatement ps = connection.prepareStatement("select * from user where password=? ;")) {
+					String daControllo= null;
+					ps.setString(1, daControllo);
+					
+					//controlliamo se la stringa vale null 
+					if(daControllo != null)
+						throw new Exception("ERRORE, test failed : la password non e' nulla");
+
+					try (ResultSet rs = ps.executeQuery();) {
+						while (rs.next()) {
+							User userTemp = new User();
+							userTemp.setNome(rs.getString("NOME"));
+							userTemp.setCognome(rs.getString("COGNOME"));
+							userTemp.setLogin(rs.getString("LOGIN"));
+							userTemp.setPassword(rs.getString("PASSWORD"));
+							userTemp.setDateCreated(
+									rs.getDate("DATECREATED") != null ? rs.getDate("DATECREATED").toLocalDate() : null);
+							userTemp.setId(rs.getLong("ID"));
+							result.add(userTemp);
+
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				return result;
 	}
 
 	@Override
