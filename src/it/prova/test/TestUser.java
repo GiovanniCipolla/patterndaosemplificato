@@ -37,21 +37,22 @@ public class TestUser {
 //
 //			testFindAllWhereDateCreatedGreaterThan(userDAOInstance);
 //			System.out.println("In tabella user ci sono " + userDAOInstance.list().size() + " elementi.");
-			
+
 //			testFindAllByCognome(userDAOInstance);
 //			System.out.println("In tabella user ci sono " + userDAOInstance.list().size() + " elementi.");
-			
-			testFindAllByLoginIniziaCon(userDAOInstance);
-			System.out.println("In tabella user ci sono " + userDAOInstance.list().size() + " elementi.");
-			
-			testFindByLoginAndPassword(userDAOInstance);
-			System.out.println("In tabella user ci sono " + userDAOInstance.list().size() + " elementi.");
-			
-			testFindAllByPassordIsNull(userDAOInstance);
-			System.out.println("In tabella user ci sono " + userDAOInstance.list().size() + " elementi.");
-			
-			// ESERCIZIO SUCCESSIVO: implementare metodi mancanti nel DAO
 
+//			testFindAllByLoginIniziaCon(userDAOInstance);
+//			System.out.println("In tabella user ci sono " + userDAOInstance.list().size() + " elementi.");
+//			
+//			testFindByLoginAndPassword(userDAOInstance);
+//			System.out.println("In tabella user ci sono " + userDAOInstance.list().size() + " elementi.");
+//			
+//			testFindAllByPassordIsNull(userDAOInstance);
+//			System.out.println("In tabella user ci sono " + userDAOInstance.list().size() + " elementi.");
+
+			testFindByExample(userDAOInstance);
+			System.out.println("In tabella user ci sono " + userDAOInstance.list().size() + " elementi.");
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -141,7 +142,7 @@ public class TestUser {
 	// ------------------------------------- TEST FIND ALL BY COGNOME
 	// --------------------------
 	private static void testFindAllByCognome(UserDAO userDaoInstance) throws Exception {
-		
+
 		System.out.println("............ test find all by cognome inizio ...............");
 
 		// riempiamo lista presa dal database
@@ -152,78 +153,108 @@ public class TestUser {
 		String cognomeDaCercare = elencoPresenti.get(0).getCognome();
 		// carichiamo la lista con elementi che ci interesano
 		List<User> userPresentiByCognome = userDaoInstance.findAllByCognome(cognomeDaCercare);
-		
+
 		if (userPresentiByCognome.isEmpty())
 			throw new RuntimeException("TEST FAILED");
-		
+
 		System.out.println(".......................TEST PASSED...............");
 
 	}
-	
-	//------------------------------------- TEST FIND ALL INIZIALE LOGIN ---------------------------------------
+
+	// ------------------------------------- TEST FIND ALL INIZIALE LOGIN
+	// ---------------------------------------
 	private static void testFindAllByLoginIniziaCon(UserDAO userDaoInstance) throws Exception {
-		
+
 		System.out.println("............ test find all by login iniziale inizio ...............");
 
 		// riempiamo lista presa dal database
 		List<User> elencoPresenti = userDaoInstance.list();
-		
+
 		if (elencoPresenti.isEmpty())
 			throw new RuntimeException("erroe, e' vuota");
-		
+
 		// login che cercheremo
 		String inizialeDaCercare = elencoPresenti.get(0).getLogin();
 		// carichiamo la lista con elementi che ci interesano
 		List<User> userPresentiByIndirizzo = userDaoInstance.findAllByLoginIniziaCon(inizialeDaCercare);
-		
+
 		if (userPresentiByIndirizzo.isEmpty())
 			throw new RuntimeException("TEST FAILED");
-		
+
 		System.out.println(".......................TEST PASSED...............");
-		
+
 	}
-	
-	//-------------------------------------TEST FIND BY LOGIN AND PASSWORD ---------------------------------------
-	private static void testFindByLoginAndPassword(UserDAO userDaoInstance)  throws Exception {
+
+	// -------------------------------------TEST FIND BY LOGIN AND PASSWORD
+	// ---------------------------------------
+	private static void testFindByLoginAndPassword(UserDAO userDaoInstance) throws Exception {
 		System.out.println("............ test find all by login and password iniziale inizio ...............");
 
 		// riempiamo lista presa dal database
 		List<User> elencoPresenti = userDaoInstance.list();
-		
+
 		if (elencoPresenti.isEmpty())
 			throw new RuntimeException("errore, e' vuota");
-		
+
 		// login che cercheremo
 		String loginDaTrovare = elencoPresenti.get(0).getLogin();
 		String passDaTrovare = elencoPresenti.get(0).getPassword();
 		// carichiamo la lista con elementi che ci interesano
 		User userTrovato = userDaoInstance.findByLoginAndPassword(loginDaTrovare, passDaTrovare);
-		
+
 		if (userTrovato == null)
 			throw new RuntimeException("TEST FAILED");
-		
+
 		System.out.println(".......................TEST PASSED...............");
 	}
 
-	//------------------------------------ test find All By Password Is Null-----------------------------------
+	// ------------------------------------ test find All By Password Is
+	// Null-----------------------------------
 	private static void testFindAllByPassordIsNull(UserDAO userDaoInstance) throws Exception {
 		System.out.println("............ test find all by password null iniziale inizio ...............");
 
 		// riempiamo lista presa dal database
 		List<User> elencoPresenti = userDaoInstance.list();
-		
+
 		if (elencoPresenti.isEmpty())
 			throw new RuntimeException("errore, e' vuota");
-		
+
 		// prendiamo un user per test
 		// carichiamo la lista con elementi che ci interesano
 		elencoPresenti = userDaoInstance.findAllByPasswordIsNull();
-		
+
 		// uscirà l'errore perchè non c'è la password nulla
 //		if (elencoPresenti.isEmpty())
 //			throw new RuntimeException("TEST FAILED");
-		
+
 		System.out.println(".......................TEST PASSED...............");
+	}
+
+	// ---------------------------------- test find by example
+	// -------------------------------------------------
+
+	private static List<User> testFindByExample(UserDAO userDaoInstance) throws Exception {
+
+		System.out.println("............ test find all by example inizio ...............");
+
+		// riempiamo lista presa dal database
+		List<User> elencoPresenti = userDaoInstance.list();
+
+		if (elencoPresenti.isEmpty())
+			throw new RuntimeException("errore, e' vuota");
+
+		// user da trovare
+		User userDaTrovare = elencoPresenti.get(0);
+
+		// lsta dove metteremo i risultati
+		List<User> result = userDaoInstance.findByExample(userDaTrovare);
+
+		// verifichiamo che il risultato non sia vuoto
+		if (result.isEmpty())
+			throw new RuntimeException("errore, e' vuota");
+		
+		System.out.println("..................TEST PASSED......................");
+		return result;
 	}
 
 }
